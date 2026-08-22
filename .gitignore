@@ -1,0 +1,22 @@
+# --- personal data: never commit ---
+recordings/
+transcripts/
+reports/
+*.m4a
+*.mp3
+*.wav
+*.srt
+*.vtt
+*.tsv
+out/
+
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+dist/
+build/
+*.egg-info/
+.pytest_cache/
+.DS_Store
+.env

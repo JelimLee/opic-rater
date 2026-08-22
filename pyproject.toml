@@ -1,0 +1,33 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "opic-rater"
+version = "0.1.0"
+description = "Local-first OPIc speaking-test grader: transcribe, segment, score on 4 ACTFL axes, and generate a coaching report."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+keywords = ["opic", "actfl", "speaking", "assessment", "whisper", "claude"]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: MIT License",
+  "Topic :: Education :: Testing",
+]
+dependencies = ["anthropic>=0.40", "click>=8.1"]
+
+[project.optional-dependencies]
+mlx = ["mlx-whisper>=0.4"]          # Apple Silicon
+cpu = ["faster-whisper>=1.0"]        # everywhere else
+dev = ["pytest>=8.0"]
+
+[project.scripts]
+opic = "opic_rater.cli:cli"
+
+[project.urls]
+Homepage = "https://github.com/OWNER/opic-rater"
+Issues = "https://github.com/OWNER/opic-rater/issues"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/opic_rater"]
