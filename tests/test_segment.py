@@ -1,3 +1,5 @@
+"""Splitting a whole-session transcript into per-question answers."""
+
 import json
 
 from opic_rater.segment import apply_labels, by_prompt, by_silence, to_markdown
@@ -96,3 +98,29 @@ def test_roleplay_prompt_is_detected(tmp_path):
         {"start": 61, "end": 110, "text": LONG},
     ]
     assert len(by_prompt(_write(tmp_path, segs))) == 2
+
+
+def test_a_short_question_list_labels_what_it_covers(tmp_path):
+    """A session cut short is normal input, not a crash."""
+    segs = [
+        {"start": 0, "end": 30, "text": LONG},
+        {"start": 60, "end": 95, "text": LONG},
+        {"start": 120, "end": 155, "text": LONG},
+    ]
+    answers = apply_labels(by_silence(_write(tmp_path, segs)), "- only one\n")
+    assert [a.label for a in answers] == ["only one", None, None]
+
+
+def test_unlabelled_answers_fall_back_to_a_number(tmp_path):
+    segs = [{"start": 0, "end": 30, "text": LONG}]
+    assert "## Q1. Answer 1" in to_markdown(by_silence(_write(tmp_path, segs)), "t")
+
+
+def test_unknown_strategy_is_rejected(tmp_path):
+    import pytest
+
+    from opic_rater.segment import segment as segment_fn
+
+    segs = [{"start": 0, "end": 30, "text": LONG}]
+    with pytest.raises(ValueError, match="unknown strategy"):
+        segment_fn(_write(tmp_path, segs), strategy="magic")

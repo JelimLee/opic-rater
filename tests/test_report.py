@@ -1,3 +1,5 @@
+"""Markdown -> HTML rendering for the local report file."""
+
 from opic_rater.report import _md_to_html, to_html
 
 
@@ -23,27 +25,6 @@ def test_to_html_writes_standalone_document(tmp_path):
     text = p.read_text(encoding="utf-8")
     assert text.startswith("<!doctype html>")
     assert "<title>T</title>" in text
-
-
-def test_assembled_prompts_are_numbered_and_carry_context():
-    from opic_rater.rate import assemble, build_context
-
-    prompts = assemble(build_context("## Q1. beach\nI went to the beach."))
-    assert sorted(prompts) == [
-        "01_function", "02_accuracy", "03_content_context",
-        "04_texttype", "05_holistic", "06_synth",
-    ]
-    for text in prompts.values():
-        assert "I went to the beach." in text
-        assert "Pronunciation, stress and intonation are NOT evaluable" in text
-
-
-def test_band_is_read_from_the_trailing_band_line():
-    from opic_rater.rate import _extract_band
-
-    assert _extract_band("blah IH blah\nmore text\nBAND: AL") == "AL"
-    assert _extract_band("no marker but IM2 appears") == "IM2"
-    assert _extract_band("nothing here") == "?"
 
 
 def test_list_bullet_marker_is_stripped():

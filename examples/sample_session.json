@@ -1,0 +1,90 @@
+{
+ "text": "Let's start the interview. Tell me about yourself. Okay, so, um, I am a university student and I study literature and also computer science. I think I am a quiet person but I like to talk with my close friends. On weekends I usually read books or I go swimming in the evening because it helps me relax. That is basically me, I think. Tell me about your favourite beach. Where is it, what does it look like, and why do you like it? My favourite beach is, uh, it is in the southern part of the country, near a big port city. The sand there is quite dark and the water is not so clear, but there are many small cafes along the road behind the beach. In the evening the lights from the bridge reflect on the water and it is very beautiful. I like it because it is not too crowded compared to other beaches, and I can walk for a long time without meeting many people. What do you usually do when you go to the beach? Describe your routine from arriving until you leave. Um, when I arrive I usually park and then I buy a coffee first. And then I walk. I walk along the water for maybe one hour. Sometimes I take pictures. I don't swim actually because the water is cold. After that I sit on a bench and I listen to music, and when it becomes dark I go home. Tell me about a memorable experience you had at the beach. When was it, who were you with, what happened? Okay so this was, I think, two years ago in summer. I went with my two friends from high school. We planned to watch the sunrise, so we drove all night and we arrived around four in the morning. But when we arrived it was very foggy and we could not see anything at all. We were so disappointed, and we just sat there and complained. But then the fog cleared suddenly around six o'clock and it was, uh, it was the most beautiful sunrise I ever saw. So now we always joke that the fog was the best part.",
+ "segments": [
+  {
+   "start": 4.0,
+   "end": 9.0,
+   "text": " Let's start the interview. Tell me about yourself."
+  },
+  {
+   "start": 10.2,
+   "end": 18.6,
+   "text": " Okay, so, um, I am a university student and I study literature and also computer science."
+  },
+  {
+   "start": 19.5,
+   "end": 37.4,
+   "text": " I think I am a quiet person but I like to talk with my close friends. On weekends I usually read books or I go swimming in the evening because it helps me relax."
+  },
+  {
+   "start": 38.3,
+   "end": 44.3,
+   "text": " That is basically me, I think."
+  },
+  {
+   "start": 59.2,
+   "end": 64.2,
+   "text": " Tell me about your favourite beach. Where is it, what does it look like, and why do you like it?"
+  },
+  {
+   "start": 65.4,
+   "end": 75.4,
+   "text": " My favourite beach is, uh, it is in the southern part of the country, near a big port city."
+  },
+  {
+   "start": 76.3,
+   "end": 98.4,
+   "text": " The sand there is quite dark and the water is not so clear, but there are many small cafes along the road behind the beach. In the evening the lights from the bridge reflect on the water and it is very beautiful."
+  },
+  {
+   "start": 99.3,
+   "end": 112.5,
+   "text": " I like it because it is not too crowded compared to other beaches, and I can walk for a long time without meeting many people."
+  },
+  {
+   "start": 127.4,
+   "end": 132.4,
+   "text": " What do you usually do when you go to the beach? Describe your routine from arriving until you leave."
+  },
+  {
+   "start": 133.6,
+   "end": 140.9,
+   "text": " Um, when I arrive I usually park and then I buy a coffee first."
+  },
+  {
+   "start": 141.8,
+   "end": 155.5,
+   "text": " And then I walk. I walk along the water for maybe one hour. Sometimes I take pictures. I don't swim actually because the water is cold."
+  },
+  {
+   "start": 156.4,
+   "end": 167.0,
+   "text": " After that I sit on a bench and I listen to music, and when it becomes dark I go home."
+  },
+  {
+   "start": 181.9,
+   "end": 186.9,
+   "text": " Tell me about a memorable experience you had at the beach. When was it, who were you with, what happened?"
+  },
+  {
+   "start": 188.1,
+   "end": 198.6,
+   "text": " Okay so this was, I think, two years ago in summer. I went with my two friends from high school."
+  },
+  {
+   "start": 199.5,
+   "end": 217.9,
+   "text": " We planned to watch the sunrise, so we drove all night and we arrived around four in the morning. But when we arrived it was very foggy and we could not see anything at all."
+  },
+  {
+   "start": 218.8,
+   "end": 236.2,
+   "text": " We were so disappointed, and we just sat there and complained. But then the fog cleared suddenly around six o'clock and it was, uh, it was the most beautiful sunrise I ever saw."
+  },
+  {
+   "start": 237.1,
+   "end": 243.4,
+   "text": " So now we always joke that the fog was the best part."
+  }
+ ]
+}

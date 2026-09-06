@@ -1,3 +1,5 @@
+"""Fluency proxies. Explicitly not scores — see fluency.py's module docstring."""
+
 from opic_rater.fluency import analyse
 
 
@@ -34,3 +36,17 @@ def test_speech_only_wpm_excludes_silence():
     segs = [_seg(0, 10, "a b c d"), _seg(50, 60, "e f g h")]
     stats = analyse(segs)
     assert stats.wpm_speech_only > stats.wpm_wall_clock
+
+
+def test_as_dict_round_trips_every_field():
+    stats = analyse([_seg(0, 10, "one two three")])
+    assert stats.as_dict()["words"] == 3
+    assert set(stats.as_dict()) == {
+        "total_sec", "speech_sec", "words", "wpm_wall_clock",
+        "wpm_speech_only", "long_pauses", "filler_count",
+    }
+
+
+def test_render_disclaims_itself():
+    """This text goes into a prompt; it has to carry its own warning."""
+    assert "NOT an ACTFL criterion" in analyse([_seg(0, 10, "a b c")]).render()
