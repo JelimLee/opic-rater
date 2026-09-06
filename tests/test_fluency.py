@@ -38,6 +38,22 @@ def test_speech_only_wpm_excludes_silence():
     assert stats.wpm_speech_only > stats.wpm_wall_clock
 
 
+def test_counts_interjection_fillers():
+    stats = analyse([_seg(0, 10, "Um, so uh I think it was fine")])
+    assert stats.filler_count == 2
+
+
+def test_counts_comma_marked_discourse_fillers():
+    """Regression: a trailing \\b after a comma never matched, so `like,`
+    and `you know,` were silently counted as zero."""
+    stats = analyse([_seg(0, 10, "it was, like, fine, you know, really")])
+    assert stats.filler_count == 2
+
+
+def test_lexical_like_is_not_a_filler():
+    assert analyse([_seg(0, 10, "I like it here and I like you")]).filler_count == 0
+
+
 def test_as_dict_round_trips_every_field():
     stats = analyse([_seg(0, 10, "one two three")])
     assert stats.as_dict()["words"] == 3

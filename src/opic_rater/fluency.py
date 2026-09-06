@@ -14,7 +14,15 @@ from dataclasses import asdict, dataclass, field
 from pathlib import Path
 
 WORD_RE = re.compile(r"[A-Za-z']+")
-FILLER_RE = re.compile(r"\b(um+|uh+|erm*|hmm+|like,|you know,)\b", re.IGNORECASE)
+# Two shapes, because they need different boundaries. The interjections are
+# whole words; the discourse markers are only fillers when a comma follows
+# ("it was, like, fine" counts, "I like it here" does not). A trailing \\b
+# cannot follow a comma — comma and space are both non-word characters, so
+# there is no boundary between them — which is why these two must be split.
+FILLER_RE = re.compile(
+    r"\b(?:um+|uh+|erm*|hmm+)\b|\b(?:like|you know)\s*,",
+    re.IGNORECASE,
+)
 
 LONG_PAUSE_SEC = 1.5
 
