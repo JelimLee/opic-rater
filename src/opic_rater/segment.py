@@ -48,6 +48,14 @@ MIN_ANSWER_WORDS = 12
 
 @dataclass
 class Answer:
+    """One detected answer: a contiguous run of speech with its timings.
+
+    `prompt` is the question as the recognizer heard it (prompt strategy
+    only); `label` is the real question text supplied by the user via
+    `--questions`. `label` wins when both exist, because the heard prompt
+    is itself transcription output and may be wrong.
+    """
+
     index: int
     start: float
     end: float
@@ -68,10 +76,12 @@ class Answer:
         return self.words / (self.duration / 60) if self.duration else 0.0
 
     def header(self) -> str:
+        """Markdown heading naming this answer, preferring the real question."""
         name = self.label or self.prompt or f"Answer {self.index}"
         return f"## Q{self.index}. {name}"
 
     def stats_line(self) -> str:
+        """One-line duration/words/WPM/timestamp summary."""
         m, s = divmod(int(self.duration), 60)
         return (
             f"<{m}:{s:02d} | {self.words} words | {self.wpm:.0f} WPM | "
@@ -120,6 +130,11 @@ def _mk(idx: int, segs: list[dict], prompt: str | None = None) -> Answer:
 
 
 def by_silence(json_path: str | Path, gap: float = DEFAULT_SILENCE_GAP) -> list[Answer]:
+    """Split on silences at least `gap` seconds long.
+
+    For recordings where the prompt audio went to headphones, so the tape
+    holds only the test-taker and each question shows up as a long gap.
+    """
     segs = _load(json_path)
     blocks: list[list[dict]] = []
     current: list[dict] = []
@@ -134,6 +149,13 @@ def by_silence(json_path: str | Path, gap: float = DEFAULT_SILENCE_GAP) -> list[
 
 
 def by_prompt(json_path: str | Path) -> list[Answer]:
+    """Split on detected examiner questions.
+
+    For recordings where the mic picked up the prompt audio. Each answer
+    is what follows a question line, minus the repeat OPIc plays of that
+    same question. Returns an empty list when no question is detected,
+    which is the signal `auto` uses to fall back to silence splitting.
+    """
     segs = _load(json_path)
     marks = [i for i, s in enumerate(segs) if PROMPT_RE.match(s.get("text", "").strip())]
     if not marks:
@@ -154,6 +176,11 @@ def by_prompt(json_path: str | Path) -> list[Answer]:
 
 
 def segment(json_path: str | Path, strategy: str = "auto", gap: float = DEFAULT_SILENCE_GAP) -> list[Answer]:
+    """Split a transcript into answers using the named strategy.
+
+    `auto` runs both and keeps whichever found more answers. Raises
+    ValueError on an unknown strategy.
+    """
     if strategy == "silence":
         return by_silence(json_path, gap)
     if strategy == "prompt":
@@ -186,6 +213,7 @@ def apply_labels(answers: list[Answer], questions_md: str) -> list[Answer]:
 
 
 def to_markdown(answers: list[Answer], title: str, note: str = "") -> str:
+    """Render answers as the `.answers.md` file the grader takes as input."""
     out = [f"# {title}", ""]
     if note:
         out += [note, ""]
@@ -203,6 +231,7 @@ def to_markdown(answers: list[Answer], title: str, note: str = "") -> str:
 
 
 def stats_table(answers: list[Answer], json_path: str | Path) -> str:
+    """Render whole-session and per-answer fluency proxies as markdown."""
     overall = analyse(_load(json_path))
     rows = [
         "# Fluency proxies (NOT ACTFL criteria)",

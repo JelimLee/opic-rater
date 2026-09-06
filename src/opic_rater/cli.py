@@ -111,7 +111,7 @@ def segment(transcript_json: str, out: str, strategy: str, gap: float,
 def grade(answers_md: str, out: str, stats: str | None, questions: str | None,
           prior: str | None, criteria: str | None, engine: str, model: str,
           effort: str, pdf: bool) -> None:
-    """Score ANSWERS_MD on four ACTFL axes and write a coaching report."""
+    """Score ANSWERS_MD on four ACTFL axes plus a holistic cross-check."""
     context = rate_mod.build_context(
         transcript=_read(answers_md),
         stats=_read(stats),

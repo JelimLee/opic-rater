@@ -16,6 +16,10 @@ import re
 from dataclasses import dataclass
 from importlib import resources
 from pathlib import Path
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:  # pragma: no cover - import cost is paid only by type checkers
+    from anthropic import AsyncAnthropic
 
 DEFAULT_MODEL = "claude-opus-5"
 DEFAULT_EFFORT = "high"
@@ -48,6 +52,14 @@ SHARED_RULES = """
 
 @dataclass
 class Verdict:
+    """One rater's judgement on one axis.
+
+    `band` is the ACTFL level parsed out of the rater's own trailing
+    `BAND:` line, or `"?"` if it did not emit one. `report` is the full
+    prose, which is what the synthesizer actually reads — the band is a
+    convenience for the CLI summary, not the product.
+    """
+
     axis: str
     band: str
     report: str
@@ -76,6 +88,19 @@ def build_context(
     prior_report: str = "",
     criteria_dir: str | Path | None = None,
 ) -> str:
+    """Assemble the one context block every rater and the synthesizer share.
+
+    Identical bytes go to all six calls, which is what makes the five axis
+    verdicts comparable to each other: any disagreement between raters is
+    attributable to the axis prompt, not to differing evidence.
+
+    Only `transcript` is required. `stats` are fluency proxies, explicitly
+    labelled as non-ACTFL so a rater does not score words-per-minute.
+    `questions` sharpen the Function rater, which cannot judge task
+    completion without knowing the task. `prior_report` turns the
+    synthesizer into a progress tracker. `criteria_dir` injects the user's
+    own reference notes, which are never redistributed (see NOTICE.md).
+    """
     blocks = [SHARED_RULES, "", "[Transcript, segmented by question]", transcript]
     if stats:
         blocks += ["", "[Fluency proxies — not ACTFL criteria, context only]", stats]
@@ -94,11 +119,17 @@ def build_context(
 
 
 def rater_prompt(axis_file: str, context: str) -> str:
+    """Glue one axis prompt onto the shared context block."""
     return f"{_prompt_text(axis_file)}\n\n---\n\n{context}"
 
 
 def assemble(context: str) -> dict[str, str]:
-    """Return {file stem: full prompt}, numbered so they sort in run order."""
+    """Build every prompt as text, for the keyless `--engine prompts` path.
+
+    Returns `{file stem: full prompt}`, numbered so they sort in run order.
+    The synthesizer entry carries a placeholder where the API path splices
+    in the real verdicts, so the two engines run identical prompts.
+    """
     out = {f.removesuffix(".md"): rater_prompt(f, context) for _axis, f in RATERS}
     out["06_synth"] = (
         f"{_prompt_text(SYNTH_PROMPT)}\n\n---\n\n{context}\n\n"
@@ -108,6 +139,13 @@ def assemble(context: str) -> dict[str, str]:
 
 
 def _extract_band(text: str) -> str:
+    """Pull the ACTFL band out of a rater's reply.
+
+    Prefers the trailing `BAND: <level>` line the shared rules mandate.
+    Falls back to the first band-shaped token anywhere in the text, and
+    finally to `"?"` — a rater that would not commit is reported as such
+    rather than silently defaulting to a level.
+    """
     for line in reversed(text.strip().splitlines()):
         if line.upper().startswith("BAND:"):
             m = BAND_RE.search(line)
@@ -117,7 +155,10 @@ def _extract_band(text: str) -> str:
     return m.group(1) if m else "?"
 
 
-async def _one(client, model: str, effort: str, axis: str, prompt: str) -> Verdict:
+async def _one(
+    client: AsyncAnthropic, model: str, effort: str, axis: str, prompt: str
+) -> Verdict:
+    """Run a single axis rater to completion and parse its band."""
     async with client.messages.stream(
         model=model,
         max_tokens=MAX_TOKENS,
@@ -162,6 +203,12 @@ async def _grade_async(
     return list(verdicts), report
 
 
-def grade(context: str, model: str = DEFAULT_MODEL, effort: str = DEFAULT_EFFORT):
-    """Run all raters + synthesizer. Returns (verdicts, report_markdown)."""
+def grade(
+    context: str, model: str = DEFAULT_MODEL, effort: str = DEFAULT_EFFORT
+) -> tuple[list[Verdict], str]:
+    """Run every axis rater, then the synthesizer, against one context block.
+
+    Blocking wrapper around the async pipeline. Returns the per-axis
+    verdicts and the synthesized coaching report as markdown.
+    """
     return asyncio.run(_grade_async(context, model, effort))

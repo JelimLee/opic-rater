@@ -20,10 +20,11 @@ DEFAULT_CT2_MODEL = "large-v3"
 
 
 class TranscriptionError(RuntimeError):
-    pass
+    """A local speech-to-text backend was missing, failed, or produced no JSON."""
 
 
 def available_backend() -> str:
+    """Return the best installed backend: "mlx", "faster", or "none"."""
     if shutil.which("mlx_whisper"):
         return "mlx"
     try:
@@ -88,6 +89,11 @@ def transcribe(
     model: str | None = None,
     language: str = "en",
 ) -> Path:
+    """Transcribe `audio_path` locally and return the path to the written JSON.
+
+    Nothing is uploaded. Raises TranscriptionError when no backend is
+    installed or the chosen one fails.
+    """
     audio = Path(audio_path).expanduser().resolve()
     if not audio.exists():
         raise FileNotFoundError(audio)

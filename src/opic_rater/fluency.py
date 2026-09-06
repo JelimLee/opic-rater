@@ -21,6 +21,12 @@ LONG_PAUSE_SEC = 1.5
 
 @dataclass
 class FluencyStats:
+    """Timing and word-count proxies for one run of transcript segments.
+
+    Deliberately not a score. See the module docstring: these numbers
+    locate places worth listening to, they do not rate anything.
+    """
+
     total_sec: float
     speech_sec: float
     words: int
@@ -30,9 +36,16 @@ class FluencyStats:
     filler_count: int = 0
 
     def as_dict(self) -> dict:
+        """Plain-dict form, for logging or JSON serialization."""
         return asdict(self)
 
     def render(self) -> str:
+        """Format as the fixed-width block that gets pasted into a prompt.
+
+        Carries its own "NOT an ACTFL criterion" warnings, because this
+        text ends up in front of an LLM that would otherwise be happy to
+        treat words-per-minute as evidence of proficiency.
+        """
         pauses = ", ".join(f"{at:.0f}s({dur:.1f}s)" for at, dur in self.long_pauses[:12])
         more = "" if len(self.long_pauses) <= 12 else f" (+{len(self.long_pauses) - 12} more)"
         return "\n".join(
@@ -89,5 +102,6 @@ def analyse(segments: list[dict], full_text: str = "") -> FluencyStats:
 
 
 def analyse_file(json_path: str | Path) -> FluencyStats:
+    """Compute fluency proxies for a whole Whisper JSON transcript."""
     data = json.loads(Path(json_path).read_text(encoding="utf-8"))
     return analyse(_segments(data), data.get("text", ""))

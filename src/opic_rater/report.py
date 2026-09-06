@@ -122,6 +122,7 @@ def _md_to_html(md: str) -> str:
 
 
 def to_html(markdown: str, title: str, out_path: str | Path) -> Path:
+    """Write a self-contained HTML file (CSS inlined, no network) and return its path."""
     p = Path(out_path).expanduser()
     p.parent.mkdir(parents=True, exist_ok=True)
     p.write_text(
@@ -135,6 +136,7 @@ def to_html(markdown: str, title: str, out_path: str | Path) -> Path:
 
 
 def find_chrome() -> str | None:
+    """Locate a Chrome/Chromium/Edge binary, or None if none is installed."""
     for c in CHROME_CANDIDATES:
         if Path(c).exists():
             return c
@@ -145,6 +147,12 @@ def find_chrome() -> str | None:
 
 
 def to_pdf(html_path: str | Path, out_path: str | Path) -> Path | None:
+    """Print an HTML file to PDF via headless Chrome.
+
+    Returns None rather than raising when Chrome is absent or the render
+    fails: the PDF is a convenience and the markdown report is already on
+    disk by this point.
+    """
     chrome = find_chrome()
     if not chrome:
         return None
