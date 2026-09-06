@@ -5,10 +5,16 @@ reports/
 *.m4a
 *.mp3
 *.wav
+*.mp4
+*.flac
+*.ogg
 *.srt
 *.vtt
 *.tsv
 out/
+
+# Your own ACTFL reference notes. NOTICE.md explains why these stay local.
+criteria/
 
 __pycache__/
 *.py[cod]
@@ -18,5 +24,7 @@ dist/
 build/
 *.egg-info/
 .pytest_cache/
+.ruff_cache/
+.mypy_cache/
 .DS_Store
 .env
