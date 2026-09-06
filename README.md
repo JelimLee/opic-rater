@@ -343,7 +343,7 @@ examples/         합성 전사문 + 문항 목록 (오디오 없이 실행 가�
 ## 개발
 
 ```bash
-git clone https://github.com/OWNER/opic-rater && cd opic-rater
+git clone https://github.com/JelimLee/opic-rater && cd opic-rater
 python -m venv .venv && source .venv/bin/activate
 pip install -e '.[dev]'
 pytest        # 67 passed — 네트워크·API 키 불필요

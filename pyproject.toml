@@ -26,8 +26,8 @@ dev = ["pytest>=8.0", "ruff>=0.6"]
 opic = "opic_rater.cli:cli"
 
 [project.urls]
-Homepage = "https://github.com/OWNER/opic-rater"
-Issues = "https://github.com/OWNER/opic-rater/issues"
+Homepage = "https://github.com/JelimLee/opic-rater"
+Issues = "https://github.com/JelimLee/opic-rater/issues"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/opic_rater"]
