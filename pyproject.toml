@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 [project]
 name = "opic-rater"
 version = "0.1.0"
-description = "Local-first OPIc speaking-test grader: transcribe, segment, score on 4 ACTFL axes, and generate a coaching report."
+description = "Local-first OPIc speaking-test grader: transcribe, segment, score on four ACTFL axes plus a holistic cross-check, and generate a coaching report."
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }
@@ -20,7 +20,7 @@ dependencies = ["anthropic>=0.40", "click>=8.1"]
 [project.optional-dependencies]
 mlx = ["mlx-whisper>=0.4"]          # Apple Silicon
 cpu = ["faster-whisper>=1.0"]        # everywhere else
-dev = ["pytest>=8.0"]
+dev = ["pytest>=8.0", "ruff>=0.6"]
 
 [project.scripts]
 opic = "opic_rater.cli:cli"
@@ -31,3 +31,19 @@ Issues = "https://github.com/OWNER/opic-rater/issues"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/opic_rater"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.ruff]
+line-length = 120
+target-version = "py310"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+# Deliberately a small, stable set: pyflakes/pycodestyle for real errors,
+# isort for import order, pyupgrade for dead syntax, bugbear for the traps
+# that actually bite (bare zip, mutable defaults). Nothing stylistic enough
+# to cause churn on every edit.
+select = ["E", "W", "F", "I", "UP", "B"]

@@ -177,7 +177,10 @@ def apply_labels(answers: list[Answer], questions_md: str) -> list[Answer]:
         for line in questions_md.splitlines()
         if re.match(r"^\s*(?:[-*]|\d+[.)])\s+\S", line)
     ]
-    for answer, label in zip(answers, items):
+    # Not strict: a short question list labels the answers it covers and
+    # leaves the rest unlabelled, which is what happens when a session is cut
+    # short. A mismatch is normal input, not an error.
+    for answer, label in zip(answers, items, strict=False):
         answer.label = label
     return answers
 
