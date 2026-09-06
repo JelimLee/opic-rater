@@ -63,7 +63,7 @@ class FluencyStats:
                 f"words             : {self.words}",
                 f"WPM (wall clock)  : {self.wpm_wall_clock:.0f}   <- proxy only, NOT an ACTFL criterion",
                 f"WPM (speech only) : {self.wpm_speech_only:.0f}",
-                f"pauses >= {LONG_PAUSE_SEC}s   : {len(self.long_pauses)}"
+                f"{f'pauses >= {LONG_PAUSE_SEC}s':<18}: {len(self.long_pauses)}"
                 + (f" at {pauses}{more}" if self.long_pauses else ""),
                 f"fillers (approx)  : {self.filler_count}"
                 " <- lower bound; Whisper strips many disfluencies",
